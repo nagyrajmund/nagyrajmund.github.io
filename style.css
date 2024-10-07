@@ -10,6 +10,28 @@ body {
 	font-size: larger;
 }
 
+.prof_pic_container {
+	float: right;
+	padding-left: 30px;
+}
+
+.prof_pic_container img {
+	float: right;
+	width: 500px;
+	/* border-radius: 50%; */
+	/* Makes the container circular */
+	/* overflow: hidden; */
+	/* Ensures the image stays within the circle */
+	border: 4px solid transparent;
+	background: black border-box;
+	/* Gradient frame */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+	/* Adds depth */
+}
+
 #profile_pic {
 	float: right;
 	width: 500px;
