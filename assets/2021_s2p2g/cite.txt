@@ -1,0 +1,13 @@
+@inproceedings{kucherenko2021speech2properties2gestures,
+      title={Speech2{P}roperties2{G}estures: {G}esture-Property Prediction as a Tool for Generating Representational Gestures from Speech}, 
+      author={Kucherenko, Taras and Nagy, Rajmund and Jonell, Patrik and Neff, Michael and Kjellstr{\"o}m, Hedvig and Henter, Gustav Eje},
+      year={2021},
+      isbn = {9781450366724},
+      publisher = {Association for Computing Machinery},
+      address = {New York, NY, USA},
+      url = {https://doi.org/10.1145/3472306.347833},
+      doi = {10.1145/3472306.347833},
+      booktitle = {Proceedings of the  21th ACM International Conference on Intelligent Virtual Agents},
+      location = {Virtual Event, Japan},
+      series = {IVA '21}
+}

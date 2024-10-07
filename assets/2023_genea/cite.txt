@@ -1,0 +1,14 @@
+@inproceedings{kucherenko2023genea,
+  author={Kucherenko, Taras and Nagy, Rajmund
+     and Yoon, Youngwoo and Woo, Jieyeon
+    and Nikolov, Teodor and Tsakov, Mihail
+    and Henter, Gustav Eje},
+  title={The {GENEA} {C}hallenge 2023: {A} large-scale
+    evaluation of gesture generation models in
+    monadic and dyadic settings},
+  booktitle = {Proceedings of the ACM International
+    Conference on Multimodal Interaction},
+  publisher = {ACM},
+  series = {ICMI '23},
+  year={2023}
+}

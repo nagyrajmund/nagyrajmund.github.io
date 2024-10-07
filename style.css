@@ -4,17 +4,20 @@ body {
 	color: #333;
 	font-family: "Open Sans", sans-serif;
 	line-height: 1.5;
-	max-width: 720px;
+	max-width: 1280px;
 	margin: auto;
 	padding: 1em;
+	font-size: larger;
 }
 
 #profile_pic {
 	float: right;
-	width: 130px;
+	width: 500px;
+	padding-left: 30px;
 }
 
-h1, h2 {
+h1,
+h2 {
 	color: #000;
 	font-family: Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Cambria, Georgia, serif;
 	font-weight: normal;
@@ -52,7 +55,9 @@ a {
 	text-decoration: none;
 }
 
-a:active, a:focus, a:hover {
+a:active,
+a:focus,
+a:hover {
 	border-bottom: solid 2px;
 }
 
@@ -75,4 +80,3 @@ footer {
 	font-size: 0.9rem;
 	text-align: center;
 }
-

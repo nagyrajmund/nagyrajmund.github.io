@@ -1,0 +1,11 @@
+@inproceedings{Nagy2021gesturebot,
+author = {Nagy, Rajmund and Kucherenko, Taras and Moell, Birger and Pereira, Andr\'{e} and Kjellstr\"{o}m, Hedvig and Bernardet, Ulysses},
+title = {A Framework for Integrating Gesture Generation Models into Interactive Conversational Agents},
+year = {2021},
+isbn = {9781450383073},
+publisher = {International Foundation for Autonomous Agents and Multiagent Systems},
+address = {Richland, SC},
+booktitle = {Proceedings of the 20th International Conference on Autonomous Agents and MultiAgent Systems},
+location = {Virtual Event, United Kingdom},
+series = {AAMAS '21}
+}
