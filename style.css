@@ -13,7 +13,10 @@ body {
 .prof_pic_container {
 	float: right;
 	padding-left: 30px;
+	margin-bottom: 20px;
 }
+
+.prof_pic {}
 
 .prof_pic_container img {
 	float: right;
@@ -36,6 +39,17 @@ body {
 	float: right;
 	width: 500px;
 	padding-left: 30px;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 20px;
+}
+
+.responsive-table {
+	width: 100%;
+	overflow-x: auto;
 }
 
 h1,
@@ -101,4 +115,40 @@ footer {
 	color: #888;
 	font-size: 0.9rem;
 	text-align: center;
+}
+
+@media screen and (max-width: 600px) {
+	h1 {
+		font-size: 1.5rem;
+	}
+
+	h3 {
+		font-size: 0.9rem;
+	}
+
+	p,
+	li {
+		font-size: 0.9rem;
+	}
+
+	th,
+	td {
+		display: block;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	th {
+		text-align: left;
+	}
+
+	.prof_pic {
+		width: 100px;
+		height: 100px;
+	}
+
+	.responsive-table {
+		display: block;
+		overflow-x: auto;
+	}
 }
