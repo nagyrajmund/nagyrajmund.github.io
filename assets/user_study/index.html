@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Preference Study</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f0f13;
+      color: #e8e8f0;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 24px 32px 16px;
+      border-bottom: 1px solid #2a2a35;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #c8c8e0;
+    }
+
+    #progress-bar-wrap {
+      width: 220px;
+      height: 6px;
+      background: #2a2a35;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    #progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #6c63ff, #a78bfa);
+      border-radius: 3px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    #progress-label {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    /* ---- voting screen ---- */
+    #voting-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 24px 48px;
+      gap: 28px;
+    }
+
+    #question {
+      font-size: 1.1rem;
+      color: #a0a0c0;
+      text-align: center;
+    }
+
+    #video-row {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      max-width: 1600px;
+    }
+
+    .video-card {
+      flex: 1 1 560px;
+      max-width: 720px;
+      background: #18181f;
+      border: 2px solid #2a2a35;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    }
+
+    .video-card:hover {
+      border-color: #6c63ff;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(108, 99, 255, 0.22);
+    }
+
+    .video-card video {
+      width: 100%;
+      display: block;
+      background: #000;
+      max-height: 640px;
+      object-fit: contain;
+    }
+
+    .card-label {
+      padding: 16px;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #b0b0cc;
+    }
+
+    .vote-btn {
+      margin: 8px 16px 16px;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, #6c63ff, #a78bfa);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .vote-btn:hover {
+      opacity: 0.88;
+      transform: scale(1.02);
+    }
+
+    .vote-btn:active {
+      transform: scale(0.98);
+    }
+
+    #cant-tell-btn {
+      padding: 16px 48px;
+      background: linear-gradient(135deg, #6c63ff, #a78bfa);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      align-self: center;
+      align-self: last baseline;
+      flex-shrink: 0;
+    }
+
+    #cant-tell-btn:hover {
+      opacity: 0.88;
+      transform: scale(1.02);
+    }
+
+    #cant-tell-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* ---- results screen ---- */
+    #results-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 24px;
+      gap: 40px;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    #results-screen h2 {
+      font-size: 1.6rem;
+      color: #c8c8e0;
+      text-align: center;
+    }
+
+    .stat-block {
+      width: 100%;
+      background: #18181f;
+      border: 1px solid #2a2a35;
+      border-radius: 16px;
+      padding: 28px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .stat-block h3 {
+      font-size: 1rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: center;
+    }
+
+    .big-numbers {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .big-num-item {
+      text-align: center;
+    }
+
+    .big-num {
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .big-num.matched {
+      color: #34d399;
+    }
+
+    .big-num.mismatched {
+      color: #f87171;
+    }
+
+    .big-num-label {
+      font-size: 0.8rem;
+      color: #777;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .bar-section {
+      width: 100%;
+    }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.85rem;
+      color: #aaa;
+      margin-bottom: 6px;
+    }
+
+    .bar-row span:first-child {
+      width: 80px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .bar-track {
+      flex: 1;
+      height: 14px;
+      background: #2a2a35;
+      border-radius: 7px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 7px;
+      transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .bar-fill.matched {
+      background: linear-gradient(90deg, #10b981, #34d399);
+    }
+
+    .bar-fill.mismatched {
+      background: linear-gradient(90deg, #ef4444, #f87171);
+    }
+
+    .bar-row span:last-child {
+      width: 36px;
+      flex-shrink: 0;
+    }
+
+    .pair-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    .pair-table th {
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 8px 12px;
+      border-bottom: 1px solid #2a2a35;
+      text-align: left;
+    }
+
+    .pair-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #1e1e28;
+      vertical-align: middle;
+    }
+
+    .pair-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.78rem;
+    }
+
+    .badge.matched {
+      background: rgba(52, 211, 153, 0.15);
+      color: #34d399;
+    }
+
+    .badge.mismatched {
+      background: rgba(248, 113, 113, 0.15);
+      color: #f87171;
+    }
+
+    .badge.cant_tell {
+      background: rgba(160, 160, 192, 0.12);
+      color: #a0a0c0;
+    }
+
+    #restart-btn {
+      padding: 14px 36px;
+      background: linear-gradient(135deg, #6c63ff, #a78bfa);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    #restart-btn:hover {
+      opacity: 0.85;
+    }
+
+    /* Duration toggle */
+    .dur-toggle {
+      display: flex;
+      background: #18181f;
+      border: 1px solid #2a2a35;
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .dur-toggle button {
+      padding: 6px 14px;
+      border: none;
+      background: transparent;
+      color: #666;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+
+    .dur-toggle button.active {
+      background: #2a2a40;
+      color: #c0b8ff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Video Preference Study</h1>
+    <div class="dur-toggle">
+      <button id="btn-10s" class="active" onclick="setDuration(10)">10-second mode</button>
+      <button id="btn-20s" onclick="setDuration(20)">20-second mode</button>
+    </div>
+    <div>
+      <div id="progress-bar-wrap">
+        <div id="progress-bar"></div>
+      </div>
+      <div id="progress-label">0 / 0</div>
+    </div>
+  </header>
+
+  <!-- Voting -->
+  <div id="voting-screen">
+    <p id="question">Which video do you prefer?</p>
+    <p id="mismatch-hint" style="font-size:0.85rem; color:#666; letter-spacing:0.05em; text-transform:uppercase;"></p>
+    <div id="video-row">
+      <div class="video-card" id="card-a">
+        <video id="video-a" src="" controls playsinline></video>
+        <div class="card-label">Video A</div>
+        <button class="vote-btn" onclick="event.stopPropagation(); vote('a')">I prefer this one</button>
+      </div>
+      <button id="cant-tell-btn" onclick="cantTell()">Can't tell</button>
+      <div class="video-card" id="card-b">
+        <video id="video-b" src="" controls playsinline></video>
+        <div class="card-label">Video B</div>
+        <button class="vote-btn" onclick="event.stopPropagation(); vote('b')">I prefer this one</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="results-screen">
+    <h2>Results</h2>
+
+    <div class="stat-block">
+      <h3>Overall Preference</h3>
+      <div class="big-numbers">
+        <div class="big-num-item">
+          <div class="big-num matched" id="res-matched">0</div>
+          <div class="big-num-label">Matched preferred</div>
+        </div>
+        <div class="big-num-item">
+          <div class="big-num mismatched" id="res-mismatched">0</div>
+          <div class="big-num-label">Mismatched preferred</div>
+        </div>
+        <div class="big-num-item">
+          <div class="big-num" style="color:#a0a0c0" id="res-canttell">0</div>
+          <div class="big-num-label">Can't tell</div>
+        </div>
+      </div>
+
+      <div class="bar-section">
+        <div class="bar-row">
+          <span>Matched</span>
+          <div class="bar-track">
+            <div class="bar-fill matched" id="bar-matched" style="width:0%"></div>
+          </div>
+          <span id="pct-matched">0%</span>
+        </div>
+        <div class="bar-row">
+          <span>Mismatched</span>
+          <div class="bar-track">
+            <div class="bar-fill mismatched" id="bar-mismatched" style="width:0%"></div>
+          </div>
+          <span id="pct-mismatched">0%</span>
+        </div>
+        <div class="bar-row">
+          <span>Can't tell</span>
+          <div class="bar-track">
+            <div class="bar-fill" id="bar-canttell" style="width:0%;background:linear-gradient(90deg,#4a4a6a,#6a6a9a)">
+            </div>
+          </div>
+          <span id="pct-canttell">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-block">
+      <h3>Per-Pair Breakdown</h3>
+      <table class="pair-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Pair</th>
+            <th>Your choice</th>
+            <th>Shown as</th>
+          </tr>
+        </thead>
+        <tbody id="pair-tbody"></tbody>
+      </table>
+    </div>
+
+    <button id="restart-btn" onclick="restart()">Start Over</button>
+  </div>
+
+  <script>
+    // ---- Pair data ----
+    // Each entry: { matched: filename, mismatched: filename }
+    const PAIRS = [
+      {
+        matched: "AV03_S1755_I00000215_P5060--54_MV03_S1755_I00000215_P5061--54.mp4",
+        mismatched: "AV01_S0157_I00000501_P1287--31_MV03_S1755_I00000215_P5061--54.mp4"
+      },
+      {
+        matched: "AV00_S2017_I00001189_P1273A--160_MV00_S2017_I00001189_P2072A--160.mp4",
+        mismatched: "AV00_S2019_I00001097_P1274A--186_MV00_S2017_I00001189_P2072A--160.mp4"
+      },
+      {
+        matched: "AV00_S2019_I00001102_P1272A--201_MV00_S2019_I00001102_P1272A--201.mp4",
+        mismatched: "AV00_S2018_I00001013_P1273A--125_MV00_S2019_I00001102_P1272A--201.mp4"
+      },
+      {
+        matched: "AV01_S0066_I00000132_P1125--28_MV01_S0066_I00000132_P1124--28.mp4",
+        mismatched: "AV00_S1997_I00000184_P1247--189_MV01_S0066_I00000132_P1124--28.mp4"
+      },
+      {
+        matched: "AV01_S0157_I00000501_P1287--31_MV01_S0157_I00000501_P1287--31.mp4",
+        mismatched: "AV03_S1755_I00000215_P5060--54_MV01_S0157_I00000501_P1287--31.mp4"
+      },
+      {
+        matched: "AV00_S1997_I00000184_P1247--189_MV00_S1997_I00000184_P1247--189.mp4",
+        mismatched: "AV01_S0066_I00000132_P1125--28_MV00_S1997_I00000184_P1247--189.mp4"
+      },
+      {
+        matched: "AV01_S0223_I00000134_P1505--96_MV01_S0223_I00000134_P1506--96.mp4",
+        mismatched: "AV03_S1930_I00000108_P5054--151_MV01_S0223_I00000134_P1506--96.mp4"
+      },
+      {
+        matched: "AV00_S2019_I00001097_P1274A--186_MV00_S2019_I00001097_P1272A--186.mp4",
+        mismatched: "AV00_S2017_I00001189_P1273A--160_MV00_S2019_I00001097_P1272A--186.mp4"
+      },
+      {
+        matched: "AV00_S2017_I00001166_P2072A--181_MV00_S2017_I00001166_P2072A--181.mp4",
+        mismatched: "AV03_S1930_I00000114_P5054--97_MV00_S2017_I00001166_P2072A--181.mp4"
+      },
+      {
+        matched: "AV00_S0908_I00000502_P1009--131_MV00_S0908_I00000502_P1007--131.mp4",
+        mismatched: "AV00_S2047_I00001050_P1305A--213_MV00_S0908_I00000502_P1007--131.mp4"
+      },
+      {
+        matched: "AV00_S2018_I00001013_P1273A--125_MV00_S2018_I00001013_P1274A--125.mp4",
+        mismatched: "AV00_S2019_I00001102_P1272A--201_MV00_S2018_I00001013_P1274A--125.mp4"
+      },
+      {
+        matched: "AV00_S2047_I00001050_P1305A--213_MV00_S2047_I00001050_P1305A--213.mp4",
+        mismatched: "AV00_S0908_I00000502_P1009--131_MV00_S2047_I00001050_P1305A--213.mp4"
+      },
+      {
+        matched: "AV03_S1930_I00000108_P5054--151_MV03_S1930_I00000108_P5055--151.mp4",
+        mismatched: "AV01_S0223_I00000134_P1505--96_MV03_S1930_I00000108_P5055--151.mp4"
+      },
+      {
+        matched: "AV03_S1930_I00000114_P5054--97_MV03_S1930_I00000114_P5055--97.mp4",
+        mismatched: "AV00_S2017_I00001166_P2072A--181_MV03_S1930_I00000114_P5055--97.mp4"
+      },
+    ];
+
+
+
+    // Duration mode
+    let clipDuration = 10;
+
+    function applyClip(video) {
+      // Remove any previous listener
+      if (video._clipHandler) video.removeEventListener('timeupdate', video._clipHandler);
+      video._clipHandler = null;
+
+      if (clipDuration === 10) {
+        // If already past 10s, snap back
+        if (video.currentTime > 10) video.currentTime = 0;
+        const handler = () => {
+          if (video.currentTime >= 10) {
+            video.pause();
+            video.currentTime = 10;
+          }
+        };
+        video._clipHandler = handler;
+        video.addEventListener('timeupdate', handler);
+      }
+    }
+
+    function setDuration(secs) {
+      clipDuration = secs;
+      document.getElementById('btn-10s').classList.toggle('active', secs === 10);
+      document.getElementById('btn-20s').classList.toggle('active', secs === 20);
+      // Re-apply clip rules to current videos without reloading
+      applyClip(document.getElementById('video-a'));
+      applyClip(document.getElementById('video-b'));
+    }
+
+    // State
+    let order = [];       // shuffled pair indices
+    let current = 0;      // index into order
+    let results = [];     // { pairIndex, chosenType: 'matched'|'mismatched', shownAs: 'A'|'B', swapped: bool }
+
+    // Which slot (A or B) holds the matched video for current pair
+    let matchedIsA = true;
+
+    function init() {
+      order = PAIRS.map((_, i) => i).sort((a, b) =>
+        PAIRS[a].matched.localeCompare(PAIRS[b].matched)
+      );
+      current = 0;
+      results = [];
+      updateProgress();
+      showPair();
+      document.getElementById('voting-screen').style.display = 'flex';
+      document.getElementById('results-screen').style.display = 'none';
+    }
+
+    function updateProgress() {
+      const total = PAIRS.length;
+      const done = current;
+      const pct = total ? (done / total) * 100 : 0;
+      document.getElementById('progress-bar').style.width = pct + '%';
+      document.getElementById('progress-label').textContent = `${done} / ${total}`;
+    }
+
+    function showPair() {
+      const pairIdx = order[current];
+      const pair = PAIRS[pairIdx];
+
+      // Randomly assign matched/mismatched to A/B slots
+      matchedIsA = Math.random() < 0.5;
+
+      const srcA = matchedIsA ? pair.matched : pair.mismatched;
+      const srcB = matchedIsA ? pair.mismatched : pair.matched;
+
+      const vA = document.getElementById('video-a');
+      const vB = document.getElementById('video-b');
+
+      vA.src = 'videos/' + srcA;
+      vB.src = 'videos/' + srcB;
+      vA.load();
+      vB.load();
+      applyClip(vA);
+      applyClip(vB);
+
+      // Derive mismatch side from filename (__ML = left character, __MR = right character)
+      const side = pair.mismatched.includes('__ML') ? 'Left character mismatched'
+        : pair.mismatched.includes('__MR') ? 'Right character mismatched'
+          : '';
+      document.getElementById('mismatch-hint').textContent = side;
+    }
+
+    function cantTell() {
+      const pairIdx = order[current];
+      results.push({
+        pairIndex: pairIdx,
+        chosenType: 'cant_tell',
+        shownAs: '—',
+        matchedSlot: matchedIsA ? 'A' : 'B'
+      });
+      current++;
+      updateProgress();
+      if (current >= PAIRS.length) showResults();
+      else showPair();
+    }
+
+    function vote(choice) {
+      // choice: 'a' or 'b'
+      const pairIdx = order[current];
+
+      let chosenType;
+      if (choice === 'a') {
+        chosenType = matchedIsA ? 'matched' : 'mismatched';
+      } else {
+        chosenType = matchedIsA ? 'mismatched' : 'matched';
+      }
+
+      results.push({
+        pairIndex: pairIdx,
+        chosenType: chosenType,
+        shownAs: choice.toUpperCase(),
+        matchedSlot: matchedIsA ? 'A' : 'B'
+      });
+
+      current++;
+      updateProgress();
+
+      if (current >= PAIRS.length) {
+        showResults();
+      } else {
+        showPair();
+      }
+    }
+
+    function showResults() {
+      document.getElementById('voting-screen').style.display = 'none';
+      document.getElementById('results-screen').style.display = 'flex';
+
+      const matchedCount = results.filter(r => r.chosenType === 'matched').length;
+      const mismatchedCount = results.filter(r => r.chosenType === 'mismatched').length;
+      const cantTellCount = results.filter(r => r.chosenType === 'cant_tell').length;
+      const total = results.length;
+
+      document.getElementById('res-matched').textContent = matchedCount;
+      document.getElementById('res-mismatched').textContent = mismatchedCount;
+      document.getElementById('res-canttell').textContent = cantTellCount;
+
+      const pctM = total ? Math.round((matchedCount / total) * 100) : 0;
+      const pctMM = total ? Math.round((mismatchedCount / total) * 100) : 0;
+      const pctCT = total ? Math.round((cantTellCount / total) * 100) : 0;
+
+      document.getElementById('pct-matched').textContent = pctM + '%';
+      document.getElementById('pct-mismatched').textContent = pctMM + '%';
+      document.getElementById('pct-canttell').textContent = pctCT + '%';
+
+      // Animate bars after a tick
+      setTimeout(() => {
+        document.getElementById('bar-matched').style.width = pctM + '%';
+        document.getElementById('bar-mismatched').style.width = pctMM + '%';
+        document.getElementById('bar-canttell').style.width = pctCT + '%';
+      }, 80);
+
+      // Per-pair table
+      const tbody = document.getElementById('pair-tbody');
+      tbody.innerHTML = '';
+
+      results.forEach((r, i) => {
+        const pair = PAIRS[r.pairIndex];
+        const shortName = pair.matched.replace(/--\d+\.mp4$/, '').substring(0, 30) + '…';
+
+        const shownAsText = `Video ${r.shownAs} (matched was ${r.matchedSlot})`;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+      <td>${i + 1}</td>
+      <td style="color:#888;font-size:0.78rem">${shortName}</td>
+      <td><span class="badge ${r.chosenType}">${r.chosenType}</span></td>
+      <td style="color:#666;font-size:0.78rem">${shownAsText}</td>
+    `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function restart() {
+      init();
+    }
+
+    // Kick off
+    init();
+  </script>
+</body>
+
+</html>
